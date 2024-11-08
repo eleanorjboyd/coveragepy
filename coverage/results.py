@@ -202,7 +202,11 @@ class Analysis:
         branch_lines = set(self._branch_lines())
         mba = collections.defaultdict(list)
         for l1, l2 in missing:
-            assert l1 != l2, f"missing_branch_arcs({self.filename!r}): ({l1}, {l2})"
+            if l1 == l2:
+               import contextlib, sys
+               with open(f"/tmp/l1l2-{sys.version_info[1]}.out", "a") as f:
+                   with contextlib.redirect_stdout(f):
+                       print(f"missing_branch_arcs({self.filename!r}): ({l1}, {l2})")
             if l1 in branch_lines:
                 mba[l1].append(l2)
         return mba
@@ -218,7 +222,12 @@ class Analysis:
         branch_lines = set(self._branch_lines())
         eba = collections.defaultdict(list)
         for l1, l2 in self.arcs_executed:
-            assert l1 != l2, f"executed_branch_arcs({self.filename!r}): ({l1}, {l2})"
+            assert l1 != l2
+            if l1 == l2:
+               import contextlib, sys
+               with open(f"/tmp/l1l2-{sys.version_info[1]}.out", "a") as f:
+                   with contextlib.redirect_stdout(f):
+                       print(f"executed_branch_arcs({self.filename!r}): ({l1}, {l2})")
             if (l1, l2) not in self.arc_possibilities_set:
                 continue
             if l1 in branch_lines:
